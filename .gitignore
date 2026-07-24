@@ -1,0 +1,24 @@
+# Node dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production builds
+client/dist/
+dist/
+
+# Environment variables
+.env
+server/.env
+
+# Local database and generated artifacts
+server/database.sqlite
+server/dispatched_emails/
+server/dispatched_threat_reports/
+server/public/screenshots/*.jpg
+!server/public/screenshots/.gitkeep
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+*.log
