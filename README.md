@@ -1,65 +1,66 @@
 # 🛡️ Phishing Website Reporter & Automated Takedown Hub
 
-A modern, high-performance monorepo platform for local cybersecurity communities, threat analysts, and brand protection teams to report, investigate, capture forensic evidence, and dispatch multi-vector takedown notices for malicious phishing websites.
+A modern, high-performance monorepo platform designed for cybersecurity communities, threat intelligence analysts, and brand protection teams to report, investigate, capture forensic evidence, and dispatch multi-vector takedown notices for malicious phishing websites.
 
 ---
 
 ## 📌 Table of Contents
-- [Deskripsi (Description)](#-deskripsi-description)
-- [Fitur Utama (Key Features)](#-fitur-utama-key-features)
-- [Prasyarat (Requirements)](#-prasyarat-requirements)
-- [Alur Kerja Sistem (Process & Architecture Workflow)](#-alur-kerja-sistem-process--architecture-workflow)
-- [Panduan Instalasi & Penggunaan (Installation & Setup)](#-panduan-instalasi--penggunaan-installation--setup)
-- [Dokumentasi API (API Reference)](#-dokumentasi-api-api-reference)
-- [Struktur Proyek (Project Structure)](#-struktur-proyek-project-structure)
+- [Overview & Description](#-overview--description)
+- [Key Features](#-key-features)
+- [System Requirements](#-system-requirements)
+- [Process & Architecture Workflow](#-process--architecture-workflow)
+- [Installation & Setup Guide](#-installation--setup-guide)
+- [API Reference](#-api-reference)
+- [Project Structure](#-project-structure)
+- [License](#-license)
 
 ---
 
-## 📖 Deskripsi (Description)
+## 📖 Overview & Description
 
-**Phishing Website Reporter** adalah platform analisis forensik dan pelaporan situs phishing otomatis. Sistem ini mengombinasikan *Playwright mobile headless browser*, resolusi DNS berkecepatan tinggi, pencarian kontak registrar (RDAP), pemindaian vektor ancaman sekunder (WhatsApp/Telegram/APK), serta modul penyiaran laporan ancaman (*Multi-Vector Threat Broadcast*) ke berbagai penyedia keamanan global seperti Google Safe Browsing, Microsoft Defender SmartScreen, McAfee WebAdvisor, dan NordVPN CyberSec.
-
----
-
-## ✨ Fitur Utama (Key Features)
-
-- **Public Reporting Form:** Form pelaporan publik yang bersih dengan validasi URL, *input field* merek korban (*Victim Brand Name*), serta perlindungan verifikasi Turnstile CAPTCHA.
-- **Deduplikasi Otomatis:** Deteksi laporan duplikat secara real-time. Laporan yang pernah dikirim sebelumnya akan meningkatkan jumlah *hit count* (+1) tanpa membebankan worker forensik.
-- **Worker Forensik Otomatis:**
-  - **Pencarian Domain & IP RDAP:** Identifikasi nama Registrar, penyedia server Hosting, serta email pengaduan penyalahgunaan (*Abuse Contact Email*).
-  - **Resolusi DNS Cepat & Fallback:** Resolusi DNS lokal OS (<10ms) dengan *fallback* Cloudflare DNS-over-HTTPS (DoH).
-  - **Tangkapan Layar Bukti Forensik:** Pengambilan screenshot halaman penuh (*full-page screenshot*) dengan penyamaran perangkat HP Android/iOS.
-  - **Pemindai Link Keluar (*Cross-Domain Harvester*):** Deteksi otomatis tautan penipuan sekunder seperti grup WhatsApp (`wa.me`), bot Telegram (`t.me`), Google Forms, dan file instalasi malware (`.apk`).
-- **Konsol Triage Admin 3 Kolom:** Workspace investigasi profesional yang menyajikan antrean prioritas (*hit count DESC*), bukti screenshot di dalam bingkai browser mockup, dan matriks risiko tautan keluar.
-- **Multi-Vector Threat Intelligence Broadcast:** Penyiaran otomatis laporan ancaman saat disetujui (*Approved*) ke:
-  1. 📧 Email Abuse Registrar & Hosting Provider
-  2. 🔴 **Google Safe Browsing** (Memicu layar peringatan merah di Chrome/Firefox/Safari)
-  3. 🪟 **Microsoft Defender SmartScreen** (Pemblokiran di MS Edge & Windows Defender)
-  4. 🔒 **McAfee WebAdvisor / SiteAdvisor** (Database ancaman domain McAfee)
-  5. 🌐 **NordVPN Threat Protection / CyberSec** (Pemblokiran DNS NordVPN)
-- **Verifikasi Kematian Situs Otomatis (*Janitor Service*):** Layanan latar belakang berkala yang memeriksa ulang situs approved setiap jam. Jika situs sudah mati (*NXDOMAIN / HTTP 404 / Safe Browsing warning*), status otomatis diubah menjadi `COMPLETED`.
+**Phishing Website Reporter** is an automated phishing site investigation and takedown platform. It combines Playwright mobile headless browser automation, ultra-fast DNS resolution, domain registrar RDAP lookup, outgoing secondary threat link harvesting (WhatsApp, Telegram, Google Forms, APK malware), and a multi-vector threat broadcast module to report phishing URLs across major global threat intelligence providers (Google Safe Browsing, Microsoft Defender SmartScreen, McAfee WebAdvisor, and NordVPN CyberSec).
 
 ---
 
-## ⚙️ Prasyarat (Requirements)
+## ✨ Key Features
 
-Sebelum menjalankan aplikasi ini, pastikan sistem Anda memenuhi kebutuhan berikut:
-
-- **Node.js:** v18.x atau versi yang lebih baru (`node -v`)
-- **npm:** v9.x atau lebih baru
-- **Playwright Chromium:** Browser headless untuk mengambil screenshot forensik
-- **Sistem Operasi:** Windows 10/11, macOS, atau Linux
+- **Clean Public Reporting Interface:** Sleek, centered form layout with URL validation, Victim Brand Name input, and Turnstile CAPTCHA verification.
+- **Real-Time Deduplication Layer:** Automatically detects repeat reports for the same URL, incrementing the threat hit count (+1) and displaying current status without re-triggering heavy worker tasks.
+- **Automated Forensic Processing Worker:**
+  - **Domain & IP RDAP Lookup:** Automatically identifies domain registrar details, hosting infrastructure owners, and official abuse contact email addresses (`abuse@...`).
+  - **Ultra-Fast DNS Resolution:** Employs local OS DNS lookup (<10ms) with automatic fallback to Cloudflare DNS-over-HTTPS (DoH).
+  - **Full-Page Forensic Screenshots:** Captures full-page mobile-spoofed screenshots (Android/iOS User-Agent & viewport) using Playwright headless browser.
+  - **Cross-Domain Link Harvester:** Scans target pages for outgoing secondary scam channels (WhatsApp `wa.me`, Telegram `t.me`, Google Forms, and `.apk` malware download URLs).
+- **3-Column Admin Triage Dashboard:** Professional triage workspace featuring priority queue sorted by `hit_count DESC`, technical forensic spec cards, browser mockup frame screenshot viewer, and grouped outgoing link risk matrix.
+- **Multi-Vector Threat Intelligence Broadcast:** Automatically dispatches threat notifications upon approval across 5 security channels:
+  1. 📧 **Registrar & Hosting Provider Abuse Email**
+  2. 🔴 **Google Safe Browsing API** (Triggers Red Interstitial Warning Page in Chrome, Firefox & Safari)
+  3. 🪟 **Microsoft Defender SmartScreen** (Triggers blocklist protection in Edge & Windows Defender)
+  4. 🔒 **McAfee WebAdvisor / SiteAdvisor** (Adds URL to McAfee Malicious Site Database)
+  5. 🌐 **NordVPN Threat Protection / CyberSec** (Blocks DNS resolution for Nord Security users)
+- **Automated Janitor Death Verification:** Background scheduler (runs hourly) that periodically verifies availability of approved threat URLs. When a site goes offline (*NXDOMAIN / HTTP 404 / Safe Browsing warning*), the status is automatically set to `COMPLETED`.
 
 ---
 
-## 🔄 Alur Kerja Sistem (Process & Architecture Workflow)
+## ⚙️ System Requirements
+
+Ensure your environment satisfies the following prerequisites before running the application:
+
+- **Node.js:** v18.x or higher (`node -v`)
+- **npm:** v9.x or higher
+- **Playwright Chromium:** Headless browser engine for capturing forensic screenshots
+- **Operating System:** Windows 10/11, macOS, or Linux
+
+---
+
+## 🔄 Process & Architecture Workflow
 
 ```mermaid
 flowchart TD
-    A[Pelapor Publik] -->|Input URL & Victim Brand| B(Public Report Form)
-    B -->|Submit POST /api/reports| C{Cek Duplikat DB}
-    C -->|Sudah Ada| D[Increment Hit Count + Tampilkan Modal Status]
-    C -->|Laporan Baru| E[Simpan Status PENDING & Masuk Antrean]
+    A[Public Reporter] -->|Submits URL & Victim Brand| B(Public Report Form)
+    B -->|Submit POST /api/reports| C{Check Database Duplicates}
+    C -->|Duplicate Found| D[Increment Hit Count + Show Status Modal]
+    C -->|New Report| E[Save PENDING Status & Queue Forensic Job]
     E --> F[Automated Forensic Worker]
     
     subgraph Forensic Processing
@@ -72,7 +73,7 @@ flowchart TD
 
     J & K --> L[(SQLite Database)]
     L --> M[Admin Triage Dashboard]
-    M -->|Review Analyst| N{Approve / Reject}
+    M -->|Analyst Review| N{Approve / Reject}
     N -->|Reject| O[Status REJECTED]
     N -->|Approve| P[Multi-Vector Threat Dispatcher]
 
@@ -86,20 +87,20 @@ flowchart TD
 
     P --> R[Status APPROVED]
     R --> S[Scheduled Janitor Checker - Every 1hr]
-    S -->|Site Dead / NXDOMAIN / 404| T[Status COMPLETED]
+    S -->|Site Offline / NXDOMAIN / 404| T[Status COMPLETED]
 ```
 
-### Penjelasan Tahapan Alur Kerja (*Process Step-by-Step*):
-1. **Input & Verification:** Pelapor memasukkan URL mencurigakan dan nama merek korban (*Victim Brand Name*).
-2. **Deduplication Check:** Sistem memeriksa database. Jika URL duplikat, hit count bertambah dan modal status langsung diperlihatkan.
-3. **Forensic Scanning:** Worker memproses domain, mendapatkan IP, mengekstrak email abuse registrar & hosting, mengambil screenshot tampilan HP, serta memanen link WhatsApp/Telegram/APK.
-4. **Admin Triage Review:** Analis keamanan memeriksa seluruh bukti forensik di Admin Console 3 Kolom.
-5. **Multi-Channel Dispatch:** Saat disetujui, laporan dikirim secara simultan ke Registrar Abuse Email, Google Safe Browsing, SmartScreen, McAfee, dan NordVPN.
-6. **Death Verification:** Janitor Service memantau keberadaan situs hingga mati secara otomatis.
+### Process Step-by-Step:
+1. **Report Submission:** The user submits a suspicious URL and the Victim Brand Name.
+2. **Deduplication Check:** The system queries the database. If duplicate, hit count increments and the real-time status overlay opens.
+3. **Forensic Scanning:** The worker resolves domain info, IP address, registrar abuse emails, captures mobile screenshots, and harvests outgoing scam links.
+4. **Admin Triage Review:** Security analysts review forensic evidence inside the 3-Column Admin Dashboard.
+5. **Multi-Channel Dispatch:** Upon approval, threat reports are broadcast simultaneously to Registrar Abuse Email, Google Safe Browsing, Microsoft SmartScreen, McAfee, and NordVPN.
+6. **Death Verification:** The Janitor Service monitors site status hourly until taken down automatically.
 
 ---
 
-## 🚀 Panduan Instalasi & Penggunaan (Installation & Setup)
+## 🚀 Installation & Setup Guide
 
 ### 1. Clone Repository
 ```bash
@@ -107,7 +108,7 @@ git clone https://github.com/ekorangin/phising-website-reporter.git
 cd phising-website-reporter
 ```
 
-### 2. Install Dependensi (Monorepo, Server & Client)
+### 2. Install Monorepo Dependencies
 ```bash
 npm run install:all
 ```
@@ -117,61 +118,61 @@ npm run install:all
 npx playwright install chromium
 ```
 
-### 4. Jalankan Aplikasi di Environment Lokal
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-Perintah di atas akan menjalankan dua server sekaligus:
+This command starts both servers concurrently:
 - **Express Backend API Server:** [http://localhost:5000](http://localhost:5000)
-- **Vite React Frontend Dev Server:** [http://localhost:5173](http://localhost:5173)
+- **Vite React Frontend UI:** [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 📡 Dokumentasi API (API Reference)
+## 📡 API Reference
 
-| Method | Endpoint | Deskripsi |
+| Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/reports` | Mengirimkan laporan URL baru (Body: `reported_url`, `target_brand_raw`). |
-| `GET` | `/api/reports/status?url=...` | Memeriksa status laporan berdasarkan URL. |
-| `GET` | `/api/reports/pending` | Mengambil daftar kasus pending untuk konsol admin. |
-| `POST` | `/api/reports/:id/approve` | Menyetujui laporan & menyiarkan ke 5 saluran *Threat Intelligence*. |
-| `POST` | `/api/reports/:id/reject` | Menolak laporan ancaman. |
-| `DELETE` | `/api/reports/pending` | Menghapus seluruh kasus bermodal *PENDING* dari database. |
-| `DELETE` | `/api/reports/:id` | Menghapus spesifik 1 laporan berdasarkan ID. |
-| `GET` | `/api/brands?q=...` | Mendapatkan saran nama merek terpopuler. |
-| `POST` | `/api/janitor/run` | Memicu pengecekan kematian situs (*Janitor check*) secara manual. |
+| `POST` | `/api/reports` | Submit a new suspicious URL report (`reported_url`, `target_brand_raw`). |
+| `GET` | `/api/reports/status?url=...` | Check report status by URL. |
+| `GET` | `/api/reports/pending` | Retrieve all pending triage cases for the admin console. |
+| `POST` | `/api/reports/:id/approve` | Approve report & broadcast across 5 threat intelligence channels. |
+| `POST` | `/api/reports/:id/reject` | Reject report. |
+| `DELETE` | `/api/reports/pending` | Delete all pending cases from the database. |
+| `DELETE` | `/api/reports/:id` | Delete a specific report by ID. |
+| `GET` | `/api/brands?q=...` | Retrieve brand suggestions autocomplete. |
+| `POST` | `/api/janitor/run` | Manually trigger site availability verification check. |
 
 ---
 
-## 📁 Struktur Proyek (Project Structure)
+## 📁 Project Structure
 
 ```text
 phising-website-reporter/
-├── client/                     # Frontend React (Vite)
+├── client/                     # React Frontend (Vite)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── AdminDashboard.jsx  # Konsol Triage Admin 3 Kolom
-│   │   │   ├── PublicForm.jsx      # Form Pelaporan Publik
-│   │   │   └── StatusModal.jsx     # Overlay Status Deduplikasi
-│   │   ├── App.jsx             # Shell Navigasi Utama
-│   │   └── index.css           # Styling Vanilla CSS UI
+│   │   │   ├── AdminDashboard.jsx  # 3-Column Admin Triage Console
+│   │   │   ├── PublicForm.jsx      # Public Reporting Form Component
+│   │   │   └── StatusModal.jsx     # Deduplication Status Modal
+│   │   ├── App.jsx             # Main Navigation & View Switcher
+│   │   └── index.css           # Vanilla CSS Styling & Design Tokens
 │   └── package.json
-├── server/                     # Backend Express.js Server
+├── server/                     # Express.js Backend & Workers
 │   ├── src/
-│   │   ├── index.js            # Server API Entrypoint & Routes
-│   │   ├── worker.js           # Worker Forensik & Tangkapan Layar (Playwright)
-│   │   ├── threat_dispatcher.js# Modul Multi-Vector Threat Intelligence Broadcast
-│   │   ├── mailer.js           # Pengirim Email Abuse Registrar
-│   │   ├── janitor.js          # Scheduler Verifikasi Kematian Situs
-│   │   └── db.js               # Inisialisasi SQLite Database
-│   ├── public/screenshots/     # Direktori Penyimpanan Screenshot Forensik (.jpg)
+│   │   ├── index.js            # Express API Server Entrypoint & Routes
+│   │   ├── worker.js           # Playwright Forensic & Screenshot Worker
+│   │   ├── threat_dispatcher.js# Multi-Vector Threat Intelligence Dispatcher
+│   │   ├── mailer.js           # Registrar Abuse Email Generator
+│   │   ├── janitor.js          # Scheduled Site Death Checker
+│   │   └── db.js               # SQLite Database Initialization
+│   ├── public/screenshots/     # Captured Forensic Screenshot Directory (.jpg)
 │   └── package.json
-├── README.md                   # Dokumentasi Proyek
+├── README.md                   # Project Documentation
 └── package.json                # Root Monorepo Scripts
 ```
 
 ---
 
-## 📄 Lisensi (License)
+## 📄 License
 
-Diterbitkan di bawah [MIT License](LICENSE). Proyek terbuka untuk komunitas keamanan siber lokal.
+This project is licensed under the [MIT License](LICENSE). Open for community cybersecurity & threat intelligence collaboration.
